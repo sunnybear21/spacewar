@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>우주전쟁</title>
     <style>
         body {
@@ -15,11 +15,15 @@
             min-height: 100vh;
             font-family: 'Courier New', monospace;
             color: white;
+            overflow: hidden;
+            touch-action: none;
         }
         
         #gameContainer {
             position: relative;
             border: 2px solid #fff;
+            max-width: 100vw;
+            max-height: 100vh;
         }
         
         #gameCanvas {
@@ -33,7 +37,7 @@
             left: 10px;
             z-index: 100;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         
@@ -43,7 +47,7 @@
             right: 10px;
             z-index: 100;
             color: #fff;
-            font-size: 14px;
+            font-size: 12px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             text-align: right;
         }
@@ -54,12 +58,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.9);
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
             z-index: 200;
             display: none;
             border: 2px solid #fff;
+            max-width: 90%;
         }
         
         #startScreen {
@@ -68,33 +73,35 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.9);
-            padding: 40px;
+            padding: 30px;
             border-radius: 10px;
             text-align: center;
             z-index: 200;
             border: 2px solid #fff;
+            max-width: 90%;
         }
         
         button {
             background: #ff6b35;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             cursor: pointer;
             border-radius: 5px;
             margin: 5px;
+            touch-action: manipulation;
         }
         
         button:hover {
             background: #ff8659;
         }
         
-        .controls {
+        .controls-mobile {
             position: absolute;
             bottom: 10px;
             left: 10px;
-            font-size: 12px;
+            font-size: 10px;
             opacity: 0.7;
         }
         
@@ -102,7 +109,7 @@
             position: absolute;
             bottom: 10px;
             right: 10px;
-            font-size: 12px;
+            font-size: 10px;
             opacity: 0.7;
             text-align: right;
         }
@@ -112,7 +119,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 48px;
+            font-size: 36px;
             color: #ffff00;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
             z-index: 150;
@@ -130,30 +137,145 @@
             to { text-shadow: 0 0 20px #ffaa00, 0 0 30px #ffaa00; }
         }
         
-        .audio-controls {
-            position: absolute;
-            bottom: 60px;
-            left: 10px;
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        
-        .volume-slider {
-            width: 100px;
-            margin-left: 10px;
-        }
-        
         .title {
-            font-size: 36px;
+            font-size: 28px;
             color: #ffff00;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         .subtitle {
-            font-size: 14px;
+            font-size: 12px;
             color: #aaa;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+        
+        /* 모바일 컨트롤 버튼들 */
+        .mobile-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            z-index: 150;
+            pointer-events: none;
+        }
+        
+        .direction-pad {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            pointer-events: all;
+        }
+        
+        .d-pad-btn {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        .d-pad-btn:active {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0.95);
+        }
+        
+        .d-pad-up {
+            top: 0;
+            left: 40px;
+            width: 40px;
+            height: 35px;
+        }
+        
+        .d-pad-down {
+            bottom: 0;
+            left: 40px;
+            width: 40px;
+            height: 35px;
+        }
+        
+        .d-pad-left {
+            top: 40px;
+            left: 0;
+            width: 35px;
+            height: 40px;
+        }
+        
+        .d-pad-right {
+            top: 40px;
+            right: 0;
+            width: 35px;
+            height: 40px;
+        }
+        
+        .fire-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 107, 53, 0.8);
+            border: 3px solid rgba(255, 107, 53, 1);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            pointer-events: all;
+            touch-action: manipulation;
+        }
+        
+        .fire-button:active {
+            background: rgba(255, 107, 53, 1);
+            transform: scale(0.95);
+        }
+        
+        @media (max-width: 480px) {
+            .title { font-size: 24px; }
+            .subtitle { font-size: 11px; }
+            #ui { font-size: 14px; }
+            #records { font-size: 11px; }
+            .level-indicator { font-size: 32px; }
+            
+            .direction-pad {
+                width: 100px;
+                height: 100px;
+                left: 15px;
+                bottom: 15px;
+            }
+            
+            .d-pad-up, .d-pad-down {
+                left: 33px;
+                width: 34px;
+                height: 30px;
+            }
+            
+            .d-pad-left, .d-pad-right {
+                top: 33px;
+                width: 30px;
+                height: 34px;
+            }
+            
+            .fire-button {
+                width: 70px;
+                height: 70px;
+                right: 15px;
+                bottom: 15px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -164,14 +286,14 @@
         <div id="startScreen">
             <div class="title">🚀 우주전쟁 🚀</div>
             <div class="subtitle">클래식 슈팅 게임</div>
-            <div style="margin: 20px 0;">
+            <div style="margin: 15px 0;">
                 <div>🏆 최고 점수: <span id="bestScore">0</span></div>
                 <div>🏅 최고 레벨: <span id="bestLevel">1</span></div>
             </div>
             <button onclick="startGame()">게임 시작</button>
             <button onclick="toggleMute()">🔊 음향 ON</button>
-            <div style="margin-top: 20px; font-size: 12px; color: #aaa;">
-                화살표 키: 이동 | 스페이스바: 발사<br>
+            <div style="margin-top: 15px; font-size: 11px; color: #aaa;">
+                터치 패드: 이동 | 발사 버튼: 공격<br>
                 파워업을 먹어서 강해지세요!
             </div>
         </div>
@@ -199,14 +321,14 @@
             <div id="newRecordMsg" class="new-record" style="display: none;">
                 🎉 새로운 기록! 🎉
             </div>
-            <div style="margin: 20px 0;">
+            <div style="margin: 15px 0;">
                 <button onclick="restartGame()">다시 시작</button>
                 <button onclick="goToMenu()">메인 메뉴</button>
             </div>
         </div>
         
-        <div class="controls">
-            화살표 키: 이동 | 스페이스바: 발사
+        <div class="controls-mobile">
+            터치 패드: 이동 | 발사 버튼: 공격
         </div>
         
         <div class="powerup-info">
@@ -217,14 +339,49 @@
             🌟 실드
         </div>
         
-        <div class="audio-controls">
-            🔊 <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="0.3">
+        <!-- 모바일 컨트롤 -->
+        <div class="mobile-controls">
+            <div class="direction-pad">
+                <div class="d-pad-btn d-pad-up" data-direction="up">▲</div>
+                <div class="d-pad-btn d-pad-down" data-direction="down">▼</div>
+                <div class="d-pad-btn d-pad-left" data-direction="left">◄</div>
+                <div class="d-pad-btn d-pad-right" data-direction="right">►</div>
+            </div>
+            <div class="fire-button" id="fireBtn">🔥</div>
         </div>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        
+        // 캔버스 크기 조정 (모바일 대응)
+        function resizeCanvas() {
+            const container = document.getElementById('gameContainer');
+            const maxWidth = window.innerWidth - 20;
+            const maxHeight = window.innerHeight - 20;
+            
+            let canvasWidth = 800;
+            let canvasHeight = 600;
+            
+            const scaleX = maxWidth / canvasWidth;
+            const scaleY = maxHeight / canvasHeight;
+            const scale = Math.min(scaleX, scaleY, 1);
+            
+            canvasWidth *= scale;
+            canvasHeight *= scale;
+            
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            canvas.style.width = canvasWidth + 'px';
+            canvas.style.height = canvasHeight + 'px';
+            
+            // 플레이어 위치 조정
+            if (player) {
+                player.x = canvas.width / 2;
+                player.y = canvas.height - 50;
+            }
+        }
         
         // 오디오 컨텍스트
         let audioContext;
@@ -252,8 +409,15 @@
             shieldTime: 0
         };
         
-        // 키 입력 상태
+        // 키 입력 상태 (터치 입력 포함)
         const keys = {};
+        const touchInputs = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            fire: false
+        };
         
         // 플레이어
         const player = {
@@ -281,6 +445,54 @@
         // BGM 관련
         let bgmOscillators = [];
         let bgmGain;
+        
+        // 터치 컨트롤 설정
+        function setupTouchControls() {
+            // 방향패드 터치 이벤트
+            const dpadButtons = document.querySelectorAll('.d-pad-btn');
+            dpadButtons.forEach(btn => {
+                const direction = btn.getAttribute('data-direction');
+                
+                // 터치 시작
+                ['touchstart', 'mousedown'].forEach(event => {
+                    btn.addEventListener(event, (e) => {
+                        e.preventDefault();
+                        touchInputs[direction] = true;
+                    }, { passive: false });
+                });
+                
+                // 터치 종료
+                ['touchend', 'mouseup', 'touchleave', 'mouseleave'].forEach(event => {
+                    btn.addEventListener(event, (e) => {
+                        e.preventDefault();
+                        touchInputs[direction] = false;
+                    }, { passive: false });
+                });
+            });
+            
+            // 발사 버튼 터치 이벤트
+            const fireBtn = document.getElementById('fireBtn');
+            ['touchstart', 'mousedown'].forEach(event => {
+                fireBtn.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    touchInputs.fire = true;
+                }, { passive: false });
+            });
+            
+            ['touchend', 'mouseup', 'touchleave', 'mouseleave'].forEach(event => {
+                fireBtn.addEventListener(event, (e) => {
+                    e.preventDefault();
+                    touchInputs.fire = false;
+                }, { passive: false });
+            });
+            
+            // 연속 발사 처리
+            setInterval(() => {
+                if (touchInputs.fire && gameState.running) {
+                    playerShoot();
+                }
+            }, 100);
+        }
         
         // 기록 관리
         function loadRecords() {
@@ -323,14 +535,6 @@
                 masterGain = audioContext.createGain();
                 masterGain.connect(audioContext.destination);
                 masterGain.gain.value = masterVolume;
-                
-                // 볼륨 슬라이더 이벤트
-                document.getElementById('volumeSlider').addEventListener('input', (e) => {
-                    masterVolume = parseFloat(e.target.value);
-                    if (masterGain) {
-                        masterGain.gain.value = isMuted ? 0 : masterVolume;
-                    }
-                });
             }
         }
         
@@ -482,6 +686,7 @@
         
         // 별 배경 생성
         function createStars() {
+            stars = [];
             for (let i = 0; i < 100; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
@@ -758,15 +963,13 @@
         
         // 적 생성
         function spawnEnemies() {
-            // 레벨에 따른 생성률 대폭 증가 (레벨 10에서는 거의 계속 생성)
             const baseSpawnRate = 0.02;
-            const levelMultiplier = 1 + (gameState.level - 1) * 0.4; // 레벨마다 40% 증가
+            const levelMultiplier = 1 + (gameState.level - 1) * 0.4;
             const spawnRate = baseSpawnRate * levelMultiplier;
             
-            if (Math.random() < Math.min(spawnRate, 0.15)) { // 최대 15% 제한
+            if (Math.random() < Math.min(spawnRate, 0.15)) {
                 let type = 1;
                 
-                // 레벨에 따른 강한 적 등장 확률 증가
                 if (gameState.level >= 3) {
                     const rand = Math.random();
                     const strongEnemyChance = Math.min(0.3 + (gameState.level - 3) * 0.1, 0.7);
@@ -866,6 +1069,7 @@
         // 게임 시작
         function startGame() {
             initAudio();
+            resizeCanvas();
             
             gameState = {
                 running: true,
@@ -896,6 +1100,8 @@
             
             document.getElementById('startScreen').style.display = 'none';
             
+            createStars();
+            
             if (!isMuted) {
                 startBGM();
             }
@@ -916,16 +1122,17 @@
                 weaponState.shieldTime -= 16;
             }
             
-            if (keys['ArrowLeft'] && player.x > player.width/2) {
+            // 키보드 또는 터치 입력 처리
+            if ((keys['ArrowLeft'] || touchInputs.left) && player.x > player.width/2) {
                 player.x -= player.speed;
             }
-            if (keys['ArrowRight'] && player.x < canvas.width - player.width/2) {
+            if ((keys['ArrowRight'] || touchInputs.right) && player.x < canvas.width - player.width/2) {
                 player.x += player.speed;
             }
-            if (keys['ArrowUp'] && player.y > player.height/2) {
+            if ((keys['ArrowUp'] || touchInputs.up) && player.y > player.height/2) {
                 player.y -= player.speed;
             }
-            if (keys['ArrowDown'] && player.y < canvas.height - player.height/2) {
+            if ((keys['ArrowDown'] || touchInputs.down) && player.y < canvas.height - player.height/2) {
                 player.y += player.speed;
             }
             
@@ -1069,7 +1276,7 @@
             
             if (newRecord) {
                 document.getElementById('newRecordMsg').style.display = 'block';
-                playSound('levelup'); // 새 기록 사운드
+                playSound('levelup');
             }
             
             document.getElementById('gameOver').style.display = 'block';
@@ -1109,10 +1316,27 @@
             keys[e.code] = false;
         });
         
+        // 화면 크기 변경 감지
+        window.addEventListener('resize', () => {
+            if (gameState.started) {
+                resizeCanvas();
+                createStars();
+            }
+        });
+        
+        // 터치 이벤트 방지 (스크롤 등)
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        
         // 게임 초기화
-        createStars();
-        updateRecordDisplay();
-        gameLoop();
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            createStars();
+            updateRecordDisplay();
+            setupTouchControls();
+            gameLoop();
+        });
     </script>
 </body>
 </html>
