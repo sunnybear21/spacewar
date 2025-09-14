@@ -17,13 +17,14 @@
             color: white;
             overflow: hidden;
             touch-action: none;
+            padding-bottom: 60px; /* Footer 공간 확보 */
         }
         
         #gameContainer {
             position: relative;
             border: 2px solid #fff;
             max-width: 100vw;
-            max-height: 100vh;
+            max-height: calc(100vh - 60px); /* Footer 높이 고려 */
         }
         
         #gameCanvas {
@@ -243,6 +244,40 @@
             transform: scale(0.95);
         }
         
+        /* Footer 스타일 */
+        #game-footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            z-index: 1000;
+        }
+        
+        @media (max-height: 600px) {
+            body {
+                padding-bottom: 40px;
+            }
+            #gameContainer {
+                max-height: calc(100vh - 40px);
+            }
+            #game-footer {
+                bottom: 5px;
+                padding: 8px 12px;
+                gap: 8px;
+            }
+            #game-footer span,
+            #game-footer a {
+                font-size: 12px !important;
+            }
+        }
+        
         @media (max-width: 480px) {
             .title { font-size: 24px; }
             .subtitle { font-size: 11px; }
@@ -350,6 +385,16 @@
             <div class="fire-button" id="fireBtn">🔥</div>
         </div>
     </div>
+    
+    <!-- Footer -->
+    <div id="game-footer">
+        <span style="color: rgba(255,255,255,0.8); font-size: 14px;">Made by SunnyBear</span>
+        <span style="color: rgba(255,255,255,0.4); font-size: 14px;">|</span>
+        <a href="https://wonusdwant.tistory.com" target="_blank" 
+           style="color: rgba(102, 126, 234, 0.9); text-decoration: none; font-size: 14px;">
+           wonusdwant.tistory.com
+        </a>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -359,7 +404,7 @@
         function resizeCanvas() {
             const container = document.getElementById('gameContainer');
             const maxWidth = window.innerWidth - 20;
-            const maxHeight = window.innerHeight - 20;
+            const maxHeight = window.innerHeight - 80; // Footer 공간 고려
             
             let canvasWidth = 800;
             let canvasHeight = 600;
